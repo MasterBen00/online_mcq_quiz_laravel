@@ -20,7 +20,21 @@ class ApiAuthController extends Controller
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:6|confirmed',
             'type' => 'integer',
+            'teachers_code' => 'required|string|min:4',
         ]);
+
+        if ($request['type'] == 1) {
+
+            $validator->sometimes('teachers_code', 'unique:users', function ($input) {
+
+                $user = User::where([
+                    'type' => 1,
+                    'teachers_code' => $input->teachers_code
+                ])->count();
+
+                return $user > 0;
+            });
+        }
 
         if ($validator->fails())
         {

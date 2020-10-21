@@ -22,6 +22,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'type',
+        'teachers_code',
     ];
 
     /**
@@ -46,5 +48,10 @@ class User extends Authenticatable
     public function sendPasswordResetNotification($token)
     {
         $this->notify(new MailResetPasswordNotification($token));
+    }
+
+    public function quizzes()
+    {
+        return $this->hasMany('App\Models\Quiz');
     }
 }
