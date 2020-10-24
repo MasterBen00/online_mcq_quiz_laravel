@@ -54,4 +54,9 @@ class User extends Authenticatable
     {
         return $this->hasMany('App\Models\Quiz');
     }
+
+    public function score()
+    {
+        return $this->hasMany('App\Models\Score');
+    }
 }

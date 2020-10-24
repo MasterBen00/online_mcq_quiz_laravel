@@ -13,4 +13,14 @@ class QuestionRepository
     {
         return Question::where('quiz_id', $quiz_id)->get();
     }
+
+    public function getCorrectAnswer($id)
+    {
+        return Question::where('id', $id)->value('answer');
+    }
+
+    public function findQuestion($id)
+    {
+        return Question::find($id);
+    }
 }

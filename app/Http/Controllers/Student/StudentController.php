@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Student;
 
 use App\Http\Controllers\Controller;
 use App\Models\Quiz;
+use App\Models\Score;
 use App\Models\User;
 use App\Repository\QuestionRepository;
 use App\Repository\QuizRepository;
@@ -11,6 +12,7 @@ use App\Repository\StudentRepository;
 use App\Repository\TeacherRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 
 class StudentController extends Controller
 {
@@ -81,6 +83,86 @@ class StudentController extends Controller
         }
 
         $response = ['questions' => $question_list];
+
+        return response($response, 200);
+    }
+
+    public function submitAnswers(Request $request)
+    {
+        $student = Auth::guard('api')->user();
+        $answer_list = $request['answers'];
+        $obtained_score = 0;
+
+        $answers = json_decode(json_encode($answer_list), FALSE);
+
+        $quiz = null;
+        $counter = 0;
+
+        foreach ($answers as $answer) {
+
+            $question_id = $answer->id;
+
+            if ($counter == 0) {
+                $question = $this->questionRepository->findQuestion($question_id);
+                $quiz = $question->quiz;
+
+                $counter++;
+            }
+
+            $correct_answer = $this->questionRepository->getCorrectAnswer($question_id);
+            $submitted_answer = $answer->answer;
+
+            if ($correct_answer == $submitted_answer) {
+                $obtained_score = $obtained_score + 1;
+            }
+
+        }
+
+        $score = new Score();
+
+        $score->user_id = $student->id;
+        $score->quiz_id = $quiz->id;
+        $score->obtained_marks = $obtained_score;
+
+        $score->save();
+
+
+        $response = [
+            'name' => $student->name,
+            'obtained_score' => $obtained_score
+        ];
+
+        return response($response, 200);
+    }
+
+    public function submitAnswersByQuizId(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'id' => 'required|exists:quizzes',
+            'obtained_marks' => 'required|lte:10|gte:0',
+        ]);
+
+        if ($validator->fails())
+        {
+            return response(['errors'=>$validator->errors()->all()], 422);
+        }
+
+        $student = Auth::guard('api')->user();
+        $obtained_score = $request['obtained_marks'];
+
+        $score = new Score();
+
+        $score->user_id = $student->id;
+        $score->quiz_id = $request['id'];
+        $score->obtained_marks = $obtained_score;
+
+        $score->save();
+
+
+        $response = [
+            'name' => $student->name,
+            'obtained_score' => $obtained_score
+        ];
 
         return response($response, 200);
     }

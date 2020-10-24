@@ -82,14 +82,20 @@ class ApiAuthController extends Controller
 
             } else {
 
-                $response = ["message" => "Password mismatch"];
+                $response = ['errors' => [
+                    "Password mismatch",
+                ]];
 
                 return response($response, 422);
             }
 
         } else {
 
-            $response = ["message" =>'User does not exist'];
+            $response = ['errors' => [
+                'User does not exist',
+            ]];
+
+//            $response = ["message" =>'User does not exist'];
 
             return response($response, 422);
         }
