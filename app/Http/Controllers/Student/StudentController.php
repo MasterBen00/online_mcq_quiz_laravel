@@ -3,9 +3,8 @@
 namespace App\Http\Controllers\Student;
 
 use App\Http\Controllers\Controller;
-use App\Models\Quiz;
+use App\Http\Resources\Question\QuestionResource;
 use App\Models\Score;
-use App\Models\User;
 use App\Repository\QuestionRepository;
 use App\Repository\QuizRepository;
 use App\Repository\StudentRepository;
@@ -82,7 +81,8 @@ class StudentController extends Controller
             return response($response, 404);
         }
 
-        $response = ['questions' => $question_list];
+        $question_list_response = QuestionResource::collection($question_list);
+        $response = ['questions' => $question_list_response];
 
         return response($response, 200);
     }

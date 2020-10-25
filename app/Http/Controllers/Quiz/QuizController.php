@@ -41,7 +41,7 @@ class QuizController extends Controller
     {
 
         $validator = Validator::make($request->all(), [
-            'title' => 'required|string|max:255|min:10',
+            'title' => 'required|string|max:30|min:4',
             'description' => 'required|string|max:255|min:20',
             'category_id' => 'required',
         ]);
@@ -124,7 +124,7 @@ class QuizController extends Controller
     public function update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
-            'title' => 'required|string|max:255|min:10',
+            'title' => 'required|string|max:30|min:4',
             'description' => 'required|string|max:255|min:20',
             'category_id' => 'required',
         ]);
