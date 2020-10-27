@@ -57,12 +57,15 @@ Route::group(['middleware' => ['auth:api', 'api.teacher']], function () {
     //Quiz category
     Route::apiResource('categories', QuizCategoryController::class);
     Route::get("/me", [ApiAuthController::class, 'getOwnInfo']);
+    Route::get('/teacher/students', [TeacherController::class, 'getAllStudents']);
+    Route::get('/teacher/students/scores/{student_id}', [TeacherController::class, 'getStudentScore']);
 });
 
 //student
 
 Route::middleware(['auth:api'])->group(function () {
     Route::get('/student/quiz_list', [StudentController::class, 'getAllQuizzes']);
+    Route::get('/student/instructor', [StudentController::class, 'getInstructor']);
     Route::get('/student/question_list/{quiz_id}', [StudentController::class, 'getAllQuestionsFromQuiz']);
     Route::post('/student/submit', [StudentController::class, 'submitAnswers']);
     Route::post('/student/submit_answers', [StudentController::class, 'submitAnswersByQuizId']);

@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Student;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Question\QuestionResource;
+use App\Http\Resources\Quiz\QuizResource;
+use App\Http\Resources\Quiz\StudentQuizResource;
 use App\Models\Score;
 use App\Repository\QuestionRepository;
 use App\Repository\QuizRepository;
@@ -66,7 +68,9 @@ class StudentController extends Controller
 
         $quiz_list = $this->quizRepository->getQuizListFromTeacher($teacher_id);
 
-        $response = ['quizzes' => $quiz_list];
+        $quiz_list_response = StudentQuizResource::collection($quiz_list);
+
+        $response = ['quizzes' => $quiz_list_response];
 
         return response($response, 200);
     }
@@ -162,6 +166,21 @@ class StudentController extends Controller
         $response = [
             'name' => $student->name,
             'obtained_score' => $obtained_score
+        ];
+
+        return response($response, 200);
+    }
+
+    public function getInstructor()
+    {
+        $student = Auth::guard('api')->user();
+
+        $teachers_code = $student->teachers_code;
+
+        $teacher = $this->teacherRepository->findTeacherByCode($teachers_code);
+
+        $response = [
+            'teacher' => $teacher,
         ];
 
         return response($response, 200);
