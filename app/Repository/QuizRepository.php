@@ -10,6 +10,6 @@ class QuizRepository
 {
     public function getQuizListFromTeacher($teacher_id)
     {
-        return Quiz::where('user_id', $teacher_id)->get();
+        return Quiz::where('user_id', $teacher_id)->orderBy('updated_at', 'desc')->get();
     }
 }

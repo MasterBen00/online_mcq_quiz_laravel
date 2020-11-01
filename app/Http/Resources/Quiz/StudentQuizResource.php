@@ -2,8 +2,10 @@
 
 namespace App\Http\Resources\Quiz;
 
+use App\Models\CancelQuiz;
 use App\Models\Category;
 use App\Models\Question;
+use App\Models\Quiz;
 use App\Models\Score;
 use App\Models\User;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -30,6 +32,8 @@ class StudentQuizResource extends JsonResource
             "category_name" => Category::find($this->category_id)->subject,
             "user_name" => User::find($this->user_id)->name,
             "total_questions" => Question::where('quiz_id', $this->id)->count(),
+            "touched" => CancelQuiz::where([['quiz_id', $this->id], ['user_id', Auth::guard('api')->user()->id]])->first('touched'),
+            "submitted" => CancelQuiz::where([['quiz_id', $this->id], ['user_id', Auth::guard('api')->user()->id]])->first('submitted'),
             "participated" => Score::where([['quiz_id', $this->id], ['user_id', Auth::guard('api')->user()->id]])->exists(),
             "obtained_score" => Score::where([['quiz_id', $this->id], ['user_id', Auth::guard('api')->user()->id]])->first("obtained_marks"),
             "created_at" => $this->created_at->diffForHumans(),

@@ -37,6 +37,19 @@ class ApiAuthController extends Controller
             });
         }
 
+        if ($request['type'] == 0) {
+
+            $validator->sometimes('teachers_code', 'exists:users', function ($input) {
+
+                $user = User::where([
+                    'type' => 1,
+                    'teachers_code' => $input->teachers_code
+                ])->count();
+
+                return $user == 0;
+            });
+        }
+
         if ($validator->fails())
         {
             return response(['errors'=>$validator->errors()->all()], 422);

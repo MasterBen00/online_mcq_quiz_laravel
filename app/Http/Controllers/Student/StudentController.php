@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\Question\QuestionResource;
 use App\Http\Resources\Quiz\QuizResource;
 use App\Http\Resources\Quiz\StudentQuizResource;
+use App\Models\CancelQuiz;
 use App\Models\Score;
 use App\Repository\QuestionRepository;
 use App\Repository\QuizRepository;
@@ -162,6 +163,8 @@ class StudentController extends Controller
 
         $score->save();
 
+        $this->quiz_touched($request['id']);
+
 
         $response = [
             'name' => $student->name,
@@ -184,5 +187,42 @@ class StudentController extends Controller
         ];
 
         return response($response, 200);
+    }
+
+    public function quiz_touched($quiz_id)
+    {
+        $student = Auth::guard('api')->user();
+
+        $cancel_quiz = CancelQuiz::where([['quiz_id', $quiz_id], ['user_id', $student->id]])->first();
+
+        if ($cancel_quiz == null) {
+            $new_cancel_quiz = new CancelQuiz();
+
+            $new_cancel_quiz->quiz_id = $quiz_id;
+            $new_cancel_quiz->user_id = $student->id;
+            $new_cancel_quiz->touched = true;
+            $new_cancel_quiz->submitted = false;
+
+            $new_cancel_quiz->save();
+
+            $response = [
+                'cancel_quiz' => $new_cancel_quiz,
+            ];
+
+            return response($response, 200);
+
+        }
+        else {
+            $cancel_quiz->submitted = true;
+            $cancel_quiz->save();
+
+            $response = [
+                'cancel_quiz' => $cancel_quiz,
+            ];
+
+            return response($response, 200);
+
+        }
+
     }
 }

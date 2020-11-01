@@ -59,4 +59,10 @@ class User extends Authenticatable
     {
         return $this->hasMany('App\Models\Score');
     }
+
+    public function userCancelled()
+    {
+        return $this->hasMany('App\Models\CancelQuiz');
+    }
+
 }

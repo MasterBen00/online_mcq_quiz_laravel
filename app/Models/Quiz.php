@@ -28,4 +28,9 @@ class Quiz extends Model
     {
         return $this->belongsTo('App\Models\User');
     }
+
+    public function cancelled()
+    {
+        return $this->hasMany('App\Models\CancelQuiz');
+    }
 }

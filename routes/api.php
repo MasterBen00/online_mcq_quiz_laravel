@@ -63,12 +63,13 @@ Route::group(['middleware' => ['auth:api', 'api.teacher']], function () {
 
 //student
 
-Route::middleware(['auth:api'])->group(function () {
+Route::middleware(['auth:api', 'cors'])->group(function () {
     Route::get('/student/quiz_list', [StudentController::class, 'getAllQuizzes']);
     Route::get('/student/instructor', [StudentController::class, 'getInstructor']);
     Route::get('/student/question_list/{quiz_id}', [StudentController::class, 'getAllQuestionsFromQuiz']);
     Route::post('/student/submit', [StudentController::class, 'submitAnswers']);
     Route::post('/student/submit_answers', [StudentController::class, 'submitAnswersByQuizId']);
+    Route::get('/student/touch_quiz/{quiz_id}', [StudentController::class, 'quiz_touched']);
 });
 
 Route::group(['middleware' => ['api.teacher']], function () {

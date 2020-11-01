@@ -53,7 +53,7 @@ class QuestionController extends Controller
             $validator->errors()->merge(array('this quiz already have maximum 10 questions'));
         }
 
-        if ($request['answer'] != $request['option1'] && $request['answer'] != $request['option2'] &&
+        if ($request['answer'] != null && $request['answer'] != $request['option1'] && $request['answer'] != $request['option2'] &&
             $request['answer'] != $request['option3'] && $request['answer'] != $request['option4']) {
 
             $validator->errors()->merge(array('answer must be in these four options'));
