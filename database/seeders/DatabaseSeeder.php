@@ -35,8 +35,8 @@ class DatabaseSeeder extends Seeder
 
         //User::factory(10)->create();
         Category::factory(6)->create();
-        Quiz::factory(100)->create();
-        Question::factory(1000)->create();
+        //Quiz::factory(100)->create();
+        //Question::factory(1000)->create();
         //Score::factory(10)->create();
     }
 }
